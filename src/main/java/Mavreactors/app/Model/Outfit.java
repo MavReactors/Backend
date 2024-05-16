@@ -16,7 +16,7 @@ public class Outfit {
     @Column(name = "OUTFIT_ID")
     private UUID outfitId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_EMAIL", referencedColumnName = "email", nullable = false)
     private User user;
 
@@ -27,4 +27,7 @@ public class Outfit {
             inverseJoinColumns = @JoinColumn(name = "PRENDA_ID")
     )
     private List<Prendas> prendas;
+
+    @Column(name = "IS_PUBLIC")
+    private Boolean isPublic;
 }

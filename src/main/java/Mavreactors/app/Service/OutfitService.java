@@ -14,4 +14,5 @@ public interface OutfitService {
     OutfitDto updateOutfit(UUID outfitId, OutfitDto updateOutfit);
     void deleteOutfit(UUID outfitId);
     void deletePrendaFromOutfit(UUID outfitId, Long prendaId);
+    List<OutfitDto> getAllPublicOutfits();
 }

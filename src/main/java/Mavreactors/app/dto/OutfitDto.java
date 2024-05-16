@@ -20,4 +20,5 @@ public class OutfitDto {
     private User user;
     private String userEmail;
     private List<Prendas> prendas;
+    private Boolean isPublic;
 }

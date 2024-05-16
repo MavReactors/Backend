@@ -81,4 +81,10 @@ public class OutfitController {
         return ResponseEntity.ok("Clothing deleted successfully! ");
     }
 
+    @GetMapping("/outfit/public")
+    public ResponseEntity<List<OutfitDto>> getPublicOutfits() {
+        List<OutfitDto> outfitDtos = outfitService.getAllPublicOutfits();
+        return ResponseEntity.ok(outfitDtos);
+    }
+
 }

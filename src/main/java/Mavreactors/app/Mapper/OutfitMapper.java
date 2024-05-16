@@ -9,7 +9,8 @@ public class OutfitMapper {
                 outfit.getOutfitId(),
                 outfit.getUser(),
                 (outfit.getUser()).getEmail(),
-                outfit.getPrendas()
+                outfit.getPrendas(),
+                outfit.getIsPublic()
         );
     }
 
@@ -17,7 +18,8 @@ public class OutfitMapper {
         return new Outfit(
                 outfitDto.getOutfitId(),
                 outfitDto.getUser(),
-                outfitDto.getPrendas()
+                outfitDto.getPrendas(),
+                outfitDto.getIsPublic()
         );
     }
 }

@@ -57,6 +57,7 @@ public class  ImplementationOutfitService implements OutfitService {
                         new ResourceNotFoundException("Outfit is not exists with given id: " + outfitId));
         outfit.setUser(updateOutfit.getUser());
         outfit.setPrendas(updateOutfit.getPrendas());
+        outfit.setIsPublic(updateOutfit.getIsPublic());
         Outfit updateOutfitOBJ = outfitRepository.save(outfit);
         return  OutfitMapper.mapToOutfitDto(updateOutfitOBJ);
     }
@@ -85,5 +86,12 @@ public class  ImplementationOutfitService implements OutfitService {
 
         outfit.getPrendas().remove(prenda);
         outfitRepository.save(outfit);
+    }
+
+    @Override
+    public List<OutfitDto> getAllPublicOutfits() {
+        List<Outfit> outfits = outfitRepository.findByIsPublicTrue();
+        return outfits.stream().map(OutfitMapper::mapToOutfitDto)
+                .collect(Collectors.toList());
     }
 }

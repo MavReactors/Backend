@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface OutfitRepository extends JpaRepository<Outfit, UUID> {
     List<Outfit> findByUser(User user);
+    List<Outfit> findByIsPublicTrue();
 }
