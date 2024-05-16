@@ -5,17 +5,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@JsonIgnoreProperties(value = { "email"})
+@JsonIgnoreProperties(value = { "email" })
 @Table(name = "PRENDAS")
 public class Prendas {
 
-    //You need to modify the column with this SQL line:ALTER TABLE employee MODIFY COLUMN employee_id BIGINT AUTO_INCREMENT;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PRENDA_ID")
@@ -31,8 +32,9 @@ public class Prendas {
     @Column(name = "ULTIMO_LAVADO")
     private Date ultimoLavado;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "TIPO")
-    private Character tipo;
+    private Type tipo;
 
     @Column(name = "ULTIMO_USO")
     private Date ultimoUso;

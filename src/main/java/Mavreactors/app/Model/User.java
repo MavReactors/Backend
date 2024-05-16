@@ -1,12 +1,10 @@
 package Mavreactors.app.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -23,6 +21,12 @@ public class User {
 
     @Column(name = "password", nullable=false)
     private String password;
+
+    @Column(name = "userName", nullable=false, unique=true)
+    private String userName;
+
+    @Column(name = "profilePhoto", nullable=false)
+    private String profilePhoto;
 
     @Column(name = "roles", nullable=false)
     private List<UserRole> userRoles;

@@ -1,5 +1,8 @@
 package Mavreactors.app.dto;
 
+import Mavreactors.app.Model.Outfit;
+import Mavreactors.app.Model.Prendas;
+import Mavreactors.app.Model.Type;
 import Mavreactors.app.Model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +15,7 @@ import lombok.Setter;
 
 import javax.annotation.processing.Generated;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -23,9 +27,8 @@ public class PrendasDto {
     private String foto;
     private Boolean sePlancha;
     private Date ultimoLavado;
-    private Character tipo;
+    private Type tipo;
     private Date ultimoUso;
     private User user;
     private String userEmail;
-
 }

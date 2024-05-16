@@ -25,10 +25,9 @@ public class CorsConfig implements WebMvcConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedOrigins(
-                Arrays.asList("http://localhost:3000", "https://mango-dune-0d3eec31e.5.azurestaticapps.net", "https://mango-dune-0d3eec31e-2.westus2.5.azurestaticapps.net"));
-        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "Access-Control-Allow-Credentials"));
+                Arrays.asList("http://localhost:3000", "https://mango-dune-0d3eec31e.5.azurestaticapps.net/"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setExposedHeaders(Arrays.asList("Set-Cookie"));
         source.registerCorsConfiguration("/**", config);
         @SuppressWarnings("unchecked")
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
