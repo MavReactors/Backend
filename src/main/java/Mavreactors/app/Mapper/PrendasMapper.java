@@ -20,15 +20,15 @@ public class PrendasMapper {
         );
     }
 
-    public static Prendas mapToPrendas(PrendasDto prendasDtoDto){
+    public static Prendas mapToPrendas(PrendasDto prendasDto){
         return new Prendas(
-                prendasDtoDto.getPrendaId(),
-                prendasDtoDto.getFoto(),
-                prendasDtoDto.getSePlancha(),
-                prendasDtoDto.getUltimoLavado(),
-                prendasDtoDto.getTipo(),
-                prendasDtoDto.getUltimoUso(),
-                prendasDtoDto.getUser()
+                prendasDto.getPrendaId(),
+                prendasDto.getFoto(),
+                prendasDto.getSePlancha(),
+                prendasDto.getUltimoLavado(),
+                prendasDto.getTipo(),
+                prendasDto.getUltimoUso(),
+                prendasDto.getUser()
         );
     }
 }

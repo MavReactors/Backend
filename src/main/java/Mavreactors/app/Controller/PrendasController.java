@@ -63,9 +63,9 @@ public class PrendasController {
 
     @PutMapping("/prenda/{id}")
     public ResponseEntity<PrendasDto> udaptePrenda(@PathVariable("id") Long prendaId,
-                                                      @RequestBody PrendasDto udaptedPrenda){
-        udaptedPrenda.setUser(userRepository.findByEmail(udaptedPrenda.getUserEmail()));
-        PrendasDto prendasDto = prendasService.updatePrenda(prendaId, udaptedPrenda);
+                                                      @RequestBody PrendasDto updatedPrenda){
+        updatedPrenda.setUser(userRepository.findByEmail(updatedPrenda.getUserEmail()));
+        PrendasDto prendasDto = prendasService.updatePrenda(prendaId, updatedPrenda);
         return ResponseEntity.ok(prendasDto);
     }
 

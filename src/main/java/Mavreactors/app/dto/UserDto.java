@@ -1,8 +1,7 @@
 package Mavreactors.app.dto;
 
+import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.UserRole;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +16,7 @@ import java.util.List;
 public class UserDto {
     private String email;
     private String password;
+    private String userName;
+    private String profilePhoto;
     private List<UserRole> userRoles;
 }
