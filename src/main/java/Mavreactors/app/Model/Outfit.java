@@ -10,24 +10,24 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Outfit")
+@Table(name = "outfit")
 public class Outfit {
     @Id
-    @Column(name = "OUTFIT_ID")
+    @Column(name = "outfit_id")
     private UUID outfitId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USER_EMAIL", referencedColumnName = "email", nullable = false)
+    @JoinColumn(name = "user_email", referencedColumnName = "email", nullable = false)
     private User user;
 
     @ManyToMany
     @JoinTable(
-            name = "OUTFIT_PRENDAS",
+            name = "outfit_prendas",
             joinColumns = @JoinColumn(name = "OUTFIT_ID"),
             inverseJoinColumns = @JoinColumn(name = "PRENDA_ID")
     )
     private List<Prendas> prendas;
 
-    @Column(name = "IS_PUBLIC")
+    @Column(name = "is_public")
     private Boolean isPublic;
 }

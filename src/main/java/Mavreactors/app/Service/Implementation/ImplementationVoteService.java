@@ -24,16 +24,13 @@ public class ImplementationVoteService implements VoteService {
     private final OutfitRepository outfitRepository;
 
     @Override
-    public VoteDto createVote(VoteDto voteDto) {
+    public Vote createVote(VoteDto voteDto) {
         Vote vote = VoteMaper.mapToVote(voteDto);
-        Vote savedVote = voteRepository.save(vote);
-        return VoteMaper.mapToVoteDto(savedVote);
+        return voteRepository.save(vote);
     }
 
     @Override
-    public List<VoteDto> getAllVotesByOutfits() {
-        List<Vote> votes = voteRepository.findAll();
-        return votes.stream().map(VoteMaper::mapToVoteDto)
-                .collect(Collectors.toList());
+    public List<Vote> getAllVotesByOutfits() {
+        return voteRepository.findAll();
     }
 }

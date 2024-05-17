@@ -34,25 +34,20 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping("/vote")
-    public ResponseEntity<VoteDto> createVote(@RequestBody VoteDto voteDto, @CookieValue("authToken") UUID authToken){
+    public ResponseEntity<Vote> createVote(@RequestBody VoteDto voteDto, @CookieValue("authToken") UUID authToken){
         Session session = sessionRepository.findByToken(authToken);
         User user = session.getUser();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
         voteDto.setUserEmail(user.getEmail());
-        voteDto.setUser(user);
-        UUID token = UUID.randomUUID();
-        voteDto.setVoteId(token);
-        Outfit outfit = OutfitMapper.mapToOutfit(outfitService.getOutfitById(voteDto.getOutfitId()));
-        voteDto.setOutfit(outfit);
-        VoteDto saveVote = voteService.createVote(voteDto);
+        Vote saveVote = voteService.createVote(voteDto);
         return new ResponseEntity<>(saveVote, HttpStatus.CREATED);
     }
 
     @GetMapping("/vote")
-    public ResponseEntity<List<VoteDto>> getAllVotesByOutfits(){
-        List<VoteDto> votes = voteService.getAllVotesByOutfits();
+    public ResponseEntity<List<Vote>> getAllVotesByOutfits(){
+        List<Vote> votes = voteService.getAllVotesByOutfits();
         return ResponseEntity.ok(votes);
     }
 }

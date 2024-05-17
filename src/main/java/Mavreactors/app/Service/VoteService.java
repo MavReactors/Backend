@@ -1,10 +1,11 @@
 package Mavreactors.app.Service;
 
+import Mavreactors.app.Model.Vote;
 import Mavreactors.app.dto.VoteDto;
 
 import java.util.List;
 
 public interface VoteService {
-    VoteDto createVote(VoteDto voteDto);
-    List<VoteDto> getAllVotesByOutfits();
+    Vote createVote(VoteDto voteDto);
+    List<Vote> getAllVotesByOutfits();
 }

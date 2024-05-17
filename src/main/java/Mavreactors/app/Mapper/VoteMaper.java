@@ -1,26 +1,20 @@
 package Mavreactors.app.Mapper;
 
+import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Model.Vote;
 import Mavreactors.app.dto.UserDto;
 import Mavreactors.app.dto.VoteDto;
 
-public class VoteMaper {
-    public static VoteDto mapToVoteDto (Vote vote) {
-        return new VoteDto(
-                vote.getVoteId(),
-                vote.getUser(),
-                (vote.getUser()).getEmail(),
-                vote.getOutfit(),
-                (vote.getOutfit()).getOutfitId()
-        );
-    }
+import java.util.UUID;
 
+public class VoteMaper {
     public static Vote mapToVote(VoteDto voteDto){
+        UUID token = UUID.randomUUID();
         return new Vote(
-                voteDto.getVoteId(),
-                voteDto.getUser(),
-                voteDto.getOutfit()
+                token,
+                voteDto.getUserEmail(),
+                voteDto.getOutfitId()
         );
     }
 }
