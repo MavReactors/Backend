@@ -40,9 +40,12 @@ public class VoteController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
-        voteDto.setUserEmail(user.getEmail());
-        Vote saveVote = voteService.createVote(voteDto);
-        return new ResponseEntity<>(saveVote, HttpStatus.CREATED);
+        Vote saveVote = voteService.createVote(voteDto, user.getEmail());
+        if (saveVote == null) {
+            return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
+        } else {
+            return new ResponseEntity<>(saveVote, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/vote")

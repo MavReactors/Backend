@@ -6,6 +6,6 @@ import Mavreactors.app.dto.VoteDto;
 import java.util.List;
 
 public interface VoteService {
-    Vote createVote(VoteDto voteDto);
+    Vote createVote(VoteDto voteDto, String email);
     List<Vote> getAllVotesByOutfits();
 }

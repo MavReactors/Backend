@@ -24,8 +24,11 @@ public class ImplementationVoteService implements VoteService {
     private final OutfitRepository outfitRepository;
 
     @Override
-    public Vote createVote(VoteDto voteDto) {
-        Vote vote = VoteMaper.mapToVote(voteDto);
+    public Vote createVote(VoteDto voteDto, String email) {
+        if (voteRepository.findByUserIdAndOutfitId(email, voteDto.getOutfitId()) != null) {
+            return null;
+        }
+        Vote vote = VoteMaper.mapToVote(voteDto, email);
         return voteRepository.save(vote);
     }
 

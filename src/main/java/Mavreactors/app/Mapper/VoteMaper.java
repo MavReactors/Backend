@@ -9,11 +9,11 @@ import Mavreactors.app.dto.VoteDto;
 import java.util.UUID;
 
 public class VoteMaper {
-    public static Vote mapToVote(VoteDto voteDto){
+    public static Vote mapToVote(VoteDto voteDto, String email){
         UUID token = UUID.randomUUID();
         return new Vote(
                 token,
-                voteDto.getUserEmail(),
+                email,
                 voteDto.getOutfitId()
         );
     }
