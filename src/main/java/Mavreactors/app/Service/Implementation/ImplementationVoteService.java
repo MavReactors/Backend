@@ -25,8 +25,9 @@ public class ImplementationVoteService implements VoteService {
 
     @Override
     public Vote createVote(VoteDto voteDto, String email) {
-        if (voteRepository.findByUserIdAndOutfitId(email, voteDto.getOutfitId()) != null) {
-            return null;
+        Vote existingVote = voteRepository.findByUserIdAndOutfitId(email, voteDto.getOutfitId());
+        if (existingVote != null) {
+            return existingVote;
         }
         Vote vote = VoteMaper.mapToVote(voteDto, email);
         return voteRepository.save(vote);
