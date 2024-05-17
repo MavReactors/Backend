@@ -10,9 +10,7 @@ import java.util.UUID;
 
 public class VoteMaper {
     public static Vote mapToVote(VoteDto voteDto, String email){
-        UUID token = UUID.randomUUID();
         return new Vote(
-                token,
                 email,
                 voteDto.getOutfitId()
         );

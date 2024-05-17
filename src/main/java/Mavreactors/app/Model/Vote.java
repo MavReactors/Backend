@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Vote {
     @Id
     @Column(name = "VOTE_ID")
-    @NonNull
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID voteId;
 
     @JoinColumn(name = "email", insertable = false, updatable = false)
