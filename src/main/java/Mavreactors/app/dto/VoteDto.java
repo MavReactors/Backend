@@ -17,6 +17,5 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VoteDto {
-    private String userEmail;
     private UUID outfitId;
 }
