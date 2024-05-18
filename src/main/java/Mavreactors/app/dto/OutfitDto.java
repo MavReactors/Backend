@@ -1,8 +1,7 @@
 package Mavreactors.app.dto;
 
-import Mavreactors.app.Model.Prendas;
+import Mavreactors.app.Model.Clothing;
 import Mavreactors.app.Model.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +15,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OutfitDto {
-    private UUID outfitId;
-    private User user;
-    private String userEmail;
-    private List<Prendas> prendas;
+    private List<UUID> clothingIds;
     private Boolean isPublic;
 }

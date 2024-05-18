@@ -1,7 +1,5 @@
 package Mavreactors.app.Controller;
 
-import Mavreactors.app.Mapper.OutfitMapper;
-import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.Session;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Model.Vote;
@@ -9,8 +7,6 @@ import Mavreactors.app.Repository.SessionRepository;
 import Mavreactors.app.Repository.UserRepository;
 import Mavreactors.app.Service.OutfitService;
 import Mavreactors.app.Service.VoteService;
-import Mavreactors.app.dto.OutfitDto;
-import Mavreactors.app.dto.PrendasDto;
 import Mavreactors.app.dto.VoteDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
