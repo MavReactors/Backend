@@ -3,20 +3,22 @@ package Mavreactors.app.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
+import org.antlr.v4.runtime.misc.NotNull;
+
 import java.util.UUID;
 
 @Setter
 @Getter
-@Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "outfit")
-public class Outfit {
+@Entity
+@ToString
+@Table(name = "vote")
+public class Vote {
     @Id
-    @Column(name = "outfit_id")
+    @Column(name = "VOTE_ID")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID outfitId;
+    private UUID voteId;
 
     @JoinColumn(name = "email", insertable = false, updatable = false)
     @ManyToOne(optional = false, targetEntity = User.class, fetch = FetchType.EAGER)
@@ -27,21 +29,11 @@ public class Outfit {
     @NonNull
     private String userId;
 
+    @JoinColumn(name = "outfit_id", insertable = false, updatable = false)
+    @ManyToOne(optional = false, targetEntity = Outfit.class, fetch = FetchType.EAGER)
+    private Outfit outfit;
 
-    @ManyToMany
-    @JoinTable(
-            name = "outfit_prendas",
-            joinColumns = @JoinColumn(name = "outfit_id"),
-            inverseJoinColumns = @JoinColumn(name = "clothing_id")
-    )
-    @JsonIgnore
-    private List<Clothing> clothingList;
-
-    @Column(name = "clothing_id")
+    @Column(name = "outfit_id")
     @NonNull
-    private List<UUID> clothingIds;
-
-    @Column(name = "is_public")
-    @NonNull
-    private Boolean isPublic;
+    private UUID outfitId;
 }

@@ -1,20 +1,21 @@
 package Mavreactors.app.dto;
 
-import Mavreactors.app.Model.Clothing;
+import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.User;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OutfitDto {
-    private List<UUID> clothingIds;
-    private Boolean isPublic;
+public class VoteDto {
+    private UUID outfitId;
 }

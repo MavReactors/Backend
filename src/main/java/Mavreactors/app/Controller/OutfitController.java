@@ -7,7 +7,6 @@ import Mavreactors.app.Repository.SessionRepository;
 import Mavreactors.app.Repository.UserRepository;
 import Mavreactors.app.Service.OutfitService;
 import Mavreactors.app.dto.OutfitDto;
-import Mavreactors.app.dto.PrendasDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,45 +27,40 @@ public class OutfitController {
     private final UserRepository userRepository;
 
     @PostMapping("/outfit")
-    public ResponseEntity<OutfitDto> createOutfit(@RequestBody OutfitDto outfitDto, @CookieValue("authToken") UUID authToken){
+    public ResponseEntity<Outfit> createOutfit(@RequestBody OutfitDto outfitDto, @CookieValue("authToken") UUID authToken){
         Session session = sessionRepository.findByToken(authToken);
         User user = session.getUser();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
-        outfitDto.setUserEmail(user.getEmail());
-        outfitDto.setUser(user);
-        UUID token = UUID.randomUUID();
-        outfitDto.setOutfitId(token);
-        OutfitDto saveOutfit = outfitService.createOutfit(outfitDto);
+        Outfit saveOutfit = outfitService.createOutfit(outfitDto, user.getEmail());
         return new ResponseEntity<>(saveOutfit, HttpStatus.CREATED);
     }
 
     @GetMapping("/outfit")
-    public ResponseEntity<List<OutfitDto>> getOutfits(@CookieValue("authToken") UUID authToken){
+    public ResponseEntity<List<Outfit>> getOutfits(@CookieValue("authToken") UUID authToken){
         // Obtiene el usuario a partir del correo electrónico
         Session session = sessionRepository.findByToken(authToken);
         User user = session.getUser();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
-        List<OutfitDto> outfitDtos = outfitService.getAllOutfitsByUser(user);
+        List<Outfit> outfitDtos = outfitService.getAllOutfitsByUser(user);
         return ResponseEntity.ok(outfitDtos);
     }
 
     @GetMapping("/outfit/{id}")
-    public ResponseEntity<OutfitDto> getOutfitById(@PathVariable("id") UUID outfotId) {
-        OutfitDto outfitDto = outfitService.getOutfitById(outfotId);
-        return ResponseEntity.ok(outfitDto);
+    public ResponseEntity<Outfit> getOutfitById(@PathVariable("id") UUID outfotId) {
+        Outfit outfit = outfitService.getOutfitById(outfotId);
+        return ResponseEntity.ok(outfit);
 
     }
 
     @PutMapping("/outfit/{id}")
-    public ResponseEntity<OutfitDto> udapteOutfit(@PathVariable("id") UUID outfotId,
+    public ResponseEntity<Outfit> udapteOutfit(@PathVariable("id") UUID outfotId,
                                                    @RequestBody OutfitDto updatedOutfit){
-        updatedOutfit.setUser(userRepository.findByEmail(updatedOutfit.getUserEmail()));
-        OutfitDto outfitDto = outfitService.updateOutfit(outfotId, updatedOutfit);
-        return ResponseEntity.ok(outfitDto);
+        Outfit outfit = outfitService.updateOutfit(outfotId, updatedOutfit);
+        return ResponseEntity.ok(outfit);
     }
 
     @DeleteMapping("/outfit/{id}")
@@ -76,9 +70,15 @@ public class OutfitController {
     }
 
     @DeleteMapping("/outfit/{uuid}/prenda/{id}")
-    public ResponseEntity<String>  deleteOutfit(@PathVariable("uuid") UUID outfitId ,@PathVariable("id") Long prendaId){
-        outfitService.deletePrendaFromOutfit(outfitId, prendaId);
+    public ResponseEntity<String>  deleteOutfit(@PathVariable("uuid") UUID outfitId ,@PathVariable("id") UUID clothingId){
+        outfitService.deletePrendaFromOutfit(outfitId, clothingId);
         return ResponseEntity.ok("Clothing deleted successfully! ");
+    }
+
+    @GetMapping("/outfit/public")
+    public ResponseEntity<List<Outfit>> getPublicOutfits() {
+        List<Outfit> outfits = outfitService.getAllPublicOutfits();
+        return ResponseEntity.ok(outfits);
     }
 
 }

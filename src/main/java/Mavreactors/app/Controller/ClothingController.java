@@ -1,20 +1,18 @@
 package Mavreactors.app.Controller;
 
-import Mavreactors.app.Model.Prendas;
+import Mavreactors.app.Model.Clothing;
 import Mavreactors.app.Model.Session;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Repository.SessionRepository;
 import Mavreactors.app.Repository.UserRepository;
-import Mavreactors.app.Service.PrendasService;
-import Mavreactors.app.dto.PrendasDto;
+import Mavreactors.app.Service.ClothingService;
+import Mavreactors.app.dto.ClothingDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.util.Base64;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -23,55 +21,52 @@ import java.util.UUID;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/customer")
-public class PrendasController {
+public class ClothingController {
 
-    private final PrendasService prendasService;
+    private final ClothingService clothingService;
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
 
     @PostMapping("/prenda")
-    public ResponseEntity<PrendasDto> createPrenda(@RequestBody PrendasDto prendasDto, @CookieValue("authToken") UUID authToken){
+    public ResponseEntity<Clothing> createClothing(@RequestBody ClothingDto clothingDto, @CookieValue("authToken") UUID authToken){
         Session session = sessionRepository.findByToken(authToken);
         User user = session.getUser();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
-        prendasDto.setUserEmail(user.getEmail());
-        prendasDto.setUser(user);
-        PrendasDto savePrenda = prendasService.createPrenda(prendasDto);
+        Clothing savePrenda = clothingService.createClothing(clothingDto, user.getEmail());
         return new ResponseEntity<>(savePrenda, HttpStatus.CREATED);
     }
 
     @GetMapping("/prenda")
-    public ResponseEntity<List<PrendasDto>> getAllPrendas(@CookieValue("authToken") UUID authToken){
+    public ResponseEntity<List<Clothing>> getAllClothing(@CookieValue("authToken") UUID authToken){
         // Obtiene el usuario a partir del correo electrónico
         Session session = sessionRepository.findByToken(authToken);
         User user = session.getUser();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
-        List<PrendasDto> prendas = prendasService.getAllPrendasByUser(user);
-        return ResponseEntity.ok(prendas);
+        List<Clothing> clothing = clothingService.getAllClothingByUser(user);
+        return ResponseEntity.ok(clothing);
     }
 
     @GetMapping("/prenda/{id}")
-    public ResponseEntity<PrendasDto> getPrendaById(@PathVariable("id") long prendaId) {
-        PrendasDto prendasDto = prendasService.getPrendaById(prendaId);
-        return ResponseEntity.ok(prendasDto);
+    public ResponseEntity<Clothing> getClothingById(@PathVariable("id") UUID clothingId) {
+        Clothing clothing = clothingService.getClothingById(clothingId);
+        return ResponseEntity.ok(clothing);
 
     }
 
     @PutMapping("/prenda/{id}")
-    public ResponseEntity<PrendasDto> udaptePrenda(@PathVariable("id") Long prendaId,
-                                                      @RequestBody PrendasDto updatedPrenda){
-        updatedPrenda.setUser(userRepository.findByEmail(updatedPrenda.getUserEmail()));
-        PrendasDto prendasDto = prendasService.updatePrenda(prendaId, updatedPrenda);
-        return ResponseEntity.ok(prendasDto);
+    public ResponseEntity<Clothing> udapteClothing(@PathVariable("id") UUID clothingId,
+                                                    @RequestBody ClothingDto updatedClothing){
+        Clothing clothing = clothingService.updateClothing(clothingId, updatedClothing);
+        return ResponseEntity.ok(clothing);
     }
 
     @DeleteMapping("/prenda/{id}")
-    public ResponseEntity<String>  deletePrenda(@PathVariable("id") Long prendaId){
-        prendasService.deletePrenda(prendaId);
+    public ResponseEntity<String>  deleteClothing(@PathVariable("id") UUID clothingId){
+        clothingService.deleteClothing(clothingId);
         return ResponseEntity.ok("Clothing deleted successfully! ");
     }
 

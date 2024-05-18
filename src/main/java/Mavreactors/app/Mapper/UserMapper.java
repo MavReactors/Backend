@@ -1,8 +1,6 @@
 package Mavreactors.app.Mapper;
 
-import Mavreactors.app.Model.Prendas;
 import Mavreactors.app.Model.User;
-import Mavreactors.app.dto.PrendasDto;
 import Mavreactors.app.dto.UserDto;
 
 public class UserMapper {
