@@ -36,6 +36,8 @@ public class LoginController {
         System.out.println("user" + user);
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (!user.isEnabled()) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         } else if (!user.getPassword().equals(loginRequest.getPassword())) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         } else {
