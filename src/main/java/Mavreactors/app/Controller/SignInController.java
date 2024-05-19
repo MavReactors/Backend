@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api")
@@ -21,7 +19,7 @@ public class SignInController {
     }
 
     @PostMapping("/SignIn")
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
         // Verificar si ya existe un usuario con el mismo correo
         if (userService.existsByEmail(userDto.getEmail()) || userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -29,6 +27,15 @@ public class SignInController {
 
         // Si no existe, crear el nuevo usuario
         UserDto createdUser = userService.createUser(userDto);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        if (createdUser == null){
+            return ResponseEntity.badRequest().body("Error: Email is already in use!");
+        }
+        return ResponseEntity.ok("Verify email by the link sent on your email address");
     }
+
+    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token")String confirmationToken) {
+        return userService.confirmEmail(confirmationToken);
+    }
+
 }

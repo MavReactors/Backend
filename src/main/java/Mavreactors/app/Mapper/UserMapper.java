@@ -20,7 +20,8 @@ public class UserMapper {
                 userDto.getPassword(),
                 userDto.getUserName(),
                 userDto.getProfilePhoto(),
-                userDto.getUserRoles()
+                userDto.getUserRoles(),
+                false
         );
     }
 }

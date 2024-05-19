@@ -33,7 +33,7 @@ public class ProyectoCvdsApplication {
 	@Bean
 	public CommandLineRunner run() {
 		return (args) -> {
-			userRepository.save(new User("admin@site.org", "admin", "Admin :D", "",Arrays.asList(UserRole.ADMINISTRATOR, UserRole.CUSTOMER)));
+			userRepository.save(new User("admin@site.org", "admin", "Admin :D", "",Arrays.asList(UserRole.ADMINISTRATOR, UserRole.CUSTOMER), false));
 		};
 	}
 
