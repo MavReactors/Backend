@@ -1,10 +1,12 @@
 package Mavreactors.app.Service.Implementation;
 
+import Mavreactors.app.Exceptions.ResourceNotFoundException;
+import Mavreactors.app.Exceptions.EmailAlreadyExistsException;
+import Mavreactors.app.Exceptions.UserNameAlreadyExistsException;
 import Mavreactors.app.Mapper.UserMapper;
-import Mavreactors.app.Model.ConfirmationToken;
-import Mavreactors.app.Model.User;
-import Mavreactors.app.Repository.ConfirmationTokenRepository;
-import Mavreactors.app.Repository.UserRepository;
+import Mavreactors.app.Model.*;
+import Mavreactors.app.Model.Session;
+import Mavreactors.app.Repository.*;
 import Mavreactors.app.Service.EmailService;
 import Mavreactors.app.Service.UserService;
 import Mavreactors.app.dto.UserDto;
@@ -18,6 +20,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,6 +28,11 @@ import java.util.UUID;
 public class ImplementationUserService implements UserService {
 
     private final UserRepository userRepository;
+    private final SessionRepository sessionRepository;
+    private final ClothingRepository clothingRepository;
+    private final OutfitRepository outfitRepository;
+    private final VoteRepository voteRepository;
+
     @Autowired
     ConfirmationTokenRepository confirmationTokenRepository;
 
@@ -32,10 +40,14 @@ public class ImplementationUserService implements UserService {
     EmailService emailService;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public User createUser(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            return null;
-        }// Encriptar la contraseña
+            throw new EmailAlreadyExistsException("Email already in use");
+        }
+        if (userRepository.existsByUserName(userDto.getUserName())) {
+            throw new UserNameAlreadyExistsException("Username already in use");
+        }
+        // Encriptar la contraseña
         String encryptedPassword = encryptPassword(userDto.getPassword());
         userDto.setPassword(encryptedPassword);
 
@@ -53,11 +65,9 @@ public class ImplementationUserService implements UserService {
         //        +"http://localhost:8080/api/confirm-account?token="+confirmationToken.getConfirmationToken());
         emailService.sendEmail(mailMessage);
 
-        User savedUser = userRepository.save(user);
-
         System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
 
-        return UserMapper.mapToUserDto(savedUser);
+        return userRepository.save(user);
     }
 
     @Override
@@ -72,6 +82,58 @@ public class ImplementationUserService implements UserService {
             return ResponseEntity.ok("Email verified successfully!");
         }
         return ResponseEntity.badRequest().body("Error: Couldn't verify email");
+    }
+
+    @Override
+    public User getUserById(String email) {
+        User user = userRepository.findById(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User is not exists with given id: " + email));
+
+        return user;
+    }
+
+    @Override
+    public User updateUser(String email, UserDto updateUser) {
+        User user = userRepository.findById(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User is not exists with given id: " + email));
+        if (!user.getUserName().equals(updateUser.getUserName()) && userRepository.existsByUserName(updateUser.getUserName())) {
+            throw new UserNameAlreadyExistsException("Username already in use");
+        }
+        if (updateUser.getPassword() != null){
+            user.setPassword(encryptPassword(updateUser.getPassword()));
+        }
+        if (updateUser.getUserName() != null){
+            user.setUserName(updateUser.getUserName());
+        }
+        if (updateUser.getProfilePhoto() != null){
+            user.setProfilePhoto(updateUser.getProfilePhoto());
+        }
+        return  userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUser(String email) {
+        User user = userRepository.findById(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User is not exists with given id: " + email));
+        // Eliminar todas las sesiones relacionadas
+        List<Session> sessions = sessionRepository.findByUser(user);
+        sessionRepository.deleteAll(sessions);
+
+        // Eliminar todos los votos relacionados
+        List<Vote> votes = voteRepository.findByUser(user);
+        voteRepository.deleteAll(votes);
+
+        // Eliminar todos los outfits relacionados
+        List<Outfit> outfits = outfitRepository.findByUser(user);
+        outfitRepository.deleteAll(outfits);
+
+        // Eliminar todas las prendas relacionadas
+        List<Clothing> clothingList = clothingRepository.findByUser(user);
+        clothingRepository.deleteAll(clothingList);
+        userRepository.deleteById(email);
     }
 
     @Override
