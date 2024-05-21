@@ -14,15 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class ImplementationUserService implements UserService {
-
-    @Value("${is.prod}")
-    private boolean isProd;
 
     private final UserRepository userRepository;
     @Autowired
@@ -35,10 +35,11 @@ public class ImplementationUserService implements UserService {
     public UserDto createUser(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             return null;
-        }
+        }// Encriptar la contraseña
+        String encryptedPassword = encryptPassword(userDto.getPassword());
+        userDto.setPassword(encryptedPassword);
 
         User user = UserMapper.mapToUser(userDto);
-        User savedUser = userRepository.save(user);
 
         ConfirmationToken confirmationToken = new ConfirmationToken(UUID.randomUUID().toString(), user.getEmail());
         confirmationTokenRepository.save(confirmationToken);
@@ -51,6 +52,8 @@ public class ImplementationUserService implements UserService {
         //mailMessage.setText("To confirm your account, please click here : "
         //        +"http://localhost:8080/api/confirm-account?token="+confirmationToken.getConfirmationToken());
         emailService.sendEmail(mailMessage);
+
+        User savedUser = userRepository.save(user);
 
         System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
 
@@ -74,5 +77,15 @@ public class ImplementationUserService implements UserService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    private String encryptPassword(String password) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(password.getBytes());
+            return Base64.getEncoder().encodeToString(messageDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al encriptar la contraseña", e);
+        }
     }
 }
