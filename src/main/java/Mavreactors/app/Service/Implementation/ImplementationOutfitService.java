@@ -13,9 +13,10 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -84,5 +85,64 @@ public class  ImplementationOutfitService implements OutfitService {
     @Override
     public List<Outfit> getAllPublicOutfits() {
         return outfitRepository.findByIsPublicTrue();
+    }
+
+    @Override
+    public Outfit createSpecialDate(UUID outfitId, Date date) {
+        Outfit outfit = outfitRepository.findById(outfitId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Outfit does not exist with given id: " + outfitId));
+        if (outfit.getSpecialDate() == null) {
+            outfit.setSpecialDate(new ArrayList<>());
+        }
+
+        if (outfit.getSpecialDate().contains(date)) {
+            throw new ResourceNotFoundException("This date is part of the outfit with id: " + date);
+        }
+
+        outfit.getSpecialDate().add(date);
+        return outfitRepository.save(outfit);
+    }
+
+    @Override
+    public List<Date> getSpecialDate(UUID outfitId) {
+        Outfit outfit = outfitRepository.findById(outfitId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Outfit does not exist with given id: " + outfitId));
+        return outfit.getSpecialDate();
+    }
+
+    @Override
+    public List<Date> updateSpecialDate(UUID outfitId, Date oldDate, Date newDate) {
+        Outfit outfit = outfitRepository.findById(outfitId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Outfit does not exist with given id: " + outfitId));
+
+        if (!outfit.getSpecialDate().contains(oldDate)) {
+            throw new ResourceNotFoundException("This date is not part of the outfit with id: " + oldDate);
+        }
+
+        List<Date> specialDates = outfit.getSpecialDate();
+        int i = 0;
+        while (i < specialDates.size() && !(specialDates.get(i).equals(oldDate))) {
+            i++;
+        }
+        specialDates.set(i, newDate);
+        outfit.setSpecialDate(specialDates);
+        outfitRepository.save(outfit);
+        return specialDates;
+    }
+
+    @Override
+    public void deleteSpecialDate(UUID outfitId, Date date) {
+        Outfit outfit = outfitRepository.findById(outfitId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Outfit does not exist with given id: " + outfitId));
+
+        if (!outfit.getSpecialDate().contains(date)) {
+            throw new ResourceNotFoundException("This date is not part of the outfit with id: " + date);
+        }
+        outfit.getSpecialDate().remove(date);
+        outfitRepository.save(outfit);
     }
 }
