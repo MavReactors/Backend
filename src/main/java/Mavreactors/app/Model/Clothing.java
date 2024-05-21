@@ -47,4 +47,8 @@ public class Clothing {
     @Column(name = "email")
     @NonNull
     private String userId;
+
+    @Column(name = "is_facorite")
+    @NonNull
+    private Boolean isFavorite;
 }

@@ -11,4 +11,5 @@ import java.util.UUID;
 @Repository
 public interface ClothingRepository extends JpaRepository<Clothing, UUID> {
     List<Clothing> findByUser(User user);
+    List<Clothing> findByIsFavoriteTrueAndUser(User user);
 }

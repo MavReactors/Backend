@@ -3,6 +3,7 @@ package Mavreactors.app.Service.Implementation;
 import Mavreactors.app.Exceptions.ResourceNotFoundException;
 import Mavreactors.app.Mapper.ClothingMapper;
 import Mavreactors.app.Model.Clothing;
+import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Repository.ClothingRepository;
 import Mavreactors.app.Repository.UserRepository;
@@ -58,8 +59,9 @@ public class ImplementationClothingService implements ClothingService {
         if(updatedClothing.getLastWear() != null){
             clothing.setLastWear(updatedClothing.getLastWear());
         }
-
-
+        if(updatedClothing.getIsFavorite() != null){
+            clothing.setIsFavorite(updatedClothing.getIsFavorite());
+        }
         return clothingRepository.save(clothing);
     }
 
@@ -69,5 +71,10 @@ public class ImplementationClothingService implements ClothingService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee is not exists with given id: " + clothingId));
         clothingRepository.deleteById(clothingId);
+    }
+
+    @Override
+    public List<Clothing> getAllFavoriteClothing(User user) {
+        return clothingRepository.findByIsFavoriteTrueAndUser(user);
     }
 }

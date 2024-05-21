@@ -10,7 +10,8 @@ public class ClothingMapper {
                 clothingDto.getIsIroned(),
                 clothingDto.getType(),
                 clothingDto.getLastWear(),
-                emal
+                emal,
+                false
         );
     }
 }

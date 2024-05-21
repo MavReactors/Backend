@@ -17,4 +17,5 @@ public class ClothingDto {
     private Boolean isIroned;
     private Type type;
     private Date lastWear;
+    private Boolean isFavorite;
 }
