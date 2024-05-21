@@ -1,5 +1,8 @@
 package Mavreactors.app.Controller;
 
+import Mavreactors.app.Exceptions.EmailAlreadyExistsException;
+import Mavreactors.app.Exceptions.UserNameAlreadyExistsException;
+import Mavreactors.app.Model.User;
 import Mavreactors.app.Service.UserService;
 import Mavreactors.app.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +23,22 @@ public class SignInController {
 
     @PostMapping("/SignIn")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
-        // Verificar si ya existe un usuario con el mismo correo
-        if (userService.existsByEmail(userDto.getEmail()) || userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // Verificar si la contraseña no está vacía
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            return new ResponseEntity<>("Password cannot be empty", HttpStatus.BAD_REQUEST);
         }
 
-        // Si no existe, crear el nuevo usuario
-        UserDto createdUser = userService.createUser(userDto);
-        if (createdUser == null){
-            return ResponseEntity.badRequest().body("Error: Email is already in use!");
+        try {
+            // Intentar crear el nuevo usuario
+            User createdUser = userService.createUser(userDto);
+            return ResponseEntity.ok("Verify email by the link sent to your email address");
+        } catch (EmailAlreadyExistsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (UserNameAlreadyExistsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok("Verify email by the link sent on your email address");
     }
 
     @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})

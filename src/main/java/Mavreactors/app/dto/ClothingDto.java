@@ -12,7 +12,6 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ClothingDto {
     private String photo;
     private Boolean isIroned;

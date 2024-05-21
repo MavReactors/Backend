@@ -46,10 +46,19 @@ public class ImplementationClothingService implements ClothingService {
         Clothing clothing = clothingRepository.findById(clothingId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Clothing is not exists with given id: " + clothingId));
-        clothing.setPhoto(updatedClothing.getPhoto());
-        clothing.setIsIroned(updatedClothing.getIsIroned());
-        clothing.setType(updatedClothing.getType());
-        clothing.setLastWear(updatedClothing.getLastWear());
+        if(updatedClothing.getPhoto() != null){
+            clothing.setPhoto(updatedClothing.getPhoto());
+        }
+        if(updatedClothing.getIsIroned() != null){
+            clothing.setIsIroned(updatedClothing.getIsIroned());
+        }
+        if(updatedClothing.getType() != null){
+            clothing.setType(updatedClothing.getType());
+        }
+        if(updatedClothing.getLastWear() != null){
+            clothing.setLastWear(updatedClothing.getLastWear());
+        }
+
 
         return clothingRepository.save(clothing);
     }

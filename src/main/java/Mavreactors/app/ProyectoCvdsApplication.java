@@ -10,7 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.springframework.boot.CommandLineRunner;
 
@@ -33,8 +36,18 @@ public class ProyectoCvdsApplication {
 	@Bean
 	public CommandLineRunner run() {
 		return (args) -> {
-			userRepository.save(new User("admin@site.org", "admin", "Admin :D", "",Arrays.asList(UserRole.ADMINISTRATOR, UserRole.CUSTOMER), false));
+			userRepository.save(new User("admin@site.org", encryptPassword("admin"), "Admin :D", "",Arrays.asList(UserRole.ADMINISTRATOR, UserRole.CUSTOMER), true));
 		};
+	}
+
+	private String encryptPassword(String password) {
+		try {
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+			messageDigest.update(password.getBytes());
+			return Base64.getEncoder().encodeToString(messageDigest.digest());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Error al encriptar la contraseña", e);
+		}
 	}
 
 }
