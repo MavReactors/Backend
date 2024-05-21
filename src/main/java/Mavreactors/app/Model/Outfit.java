@@ -3,6 +3,8 @@ package Mavreactors.app.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,4 +46,7 @@ public class Outfit {
     @Column(name = "is_public")
     @NonNull
     private Boolean isPublic;
+
+    @Column(name = "special_date")
+    private List<Date> specialDate;
 }
