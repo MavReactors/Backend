@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -38,13 +41,23 @@ public class LoginController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else if (!user.isEnabled()) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else if (!user.getPassword().equals(loginRequest.getPassword())) {
+        } else if (!user.getPassword().equals(encryptPassword(loginRequest.getPassword()))) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         } else {
             UUID token = UUID.randomUUID();
             Session session = new Session(token, Instant.now(), user);
             sessionRepository.save(session);
             return new ResponseEntity<>(new LoginResponse(user, token), HttpStatus.OK);
+        }
+    }
+
+    private String encryptPassword(String password) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(password.getBytes());
+            return Base64.getEncoder().encodeToString(messageDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al encriptar la contraseña", e);
         }
     }
 }
