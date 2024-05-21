@@ -36,8 +36,6 @@ public class SignInController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (UserNameAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -8,7 +8,8 @@ public class OutfitMapper {
         return new Outfit(
                 email,
                 outfitDto.getClothingIds(),
-                outfitDto.getIsPublic()
+                outfitDto.getIsPublic(),
+                0
         );
     }
 }

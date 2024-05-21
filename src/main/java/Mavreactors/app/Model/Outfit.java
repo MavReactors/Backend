@@ -49,4 +49,8 @@ public class Outfit {
 
     @Column(name = "special_date")
     private List<Date> specialDate;
+
+    @Column(name = "vote_count")
+    @NonNull
+    private int voteCount;
 }
