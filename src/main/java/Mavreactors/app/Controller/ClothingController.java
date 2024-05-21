@@ -57,6 +57,18 @@ public class ClothingController {
 
     }
 
+    @GetMapping("/prendas-favoritas")
+    public ResponseEntity<List<Clothing>> getAllFavoriteClothing(@CookieValue("authToken") UUID authToken){
+        // Obtiene el usuario a partir del correo electrónico
+        Session session = sessionRepository.findByToken(authToken);
+        User user = session.getUser();
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
+        }
+        List<Clothing> clothing = clothingService.getAllFavoriteClothing(user);
+        return ResponseEntity.ok(clothing);
+    }
+
     @PutMapping("/prenda/{id}")
     public ResponseEntity<Clothing> udapteClothing(@PathVariable("id") UUID clothingId,
                                                     @RequestBody ClothingDto updatedClothing){

@@ -13,4 +13,5 @@ public interface ClothingService {
     Clothing getClothingById(UUID prendasId);
     Clothing updateClothing(UUID prendasId, ClothingDto updatePrenda);
     void deleteClothing(UUID prendasId);
+    List<Clothing> getAllFavoriteClothing(User user);
 }
