@@ -1,9 +1,11 @@
 package Mavreactors.app.Service.Implementation;
 
 import Mavreactors.app.Exceptions.ResourceNotFoundException;
+import Mavreactors.app.Exceptions.OutfitRequirementsException;
 import Mavreactors.app.Mapper.OutfitMapper;
 import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.Clothing;
+import Mavreactors.app.Model.Type;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Repository.OutfitRepository;
 import Mavreactors.app.Repository.ClothingRepository;
@@ -11,6 +13,7 @@ import Mavreactors.app.Service.OutfitService;
 import Mavreactors.app.dto.OutfitDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class  ImplementationOutfitService implements OutfitService {
@@ -28,6 +32,10 @@ public class  ImplementationOutfitService implements OutfitService {
     @Override
     public Outfit createOutfit(OutfitDto outfitDto, String email) {
         Outfit outfit = OutfitMapper.mapToOutfit(outfitDto, email);
+        // Verificar si el outfit cumple con los requisitos mínimos
+        if (!outfitMeetsRequirements(outfit)) {
+            throw new OutfitRequirementsException("The outfit must have at least one 'TRUNK', 'PANTS' and 'SHOES' type garment");
+        }
         return outfitRepository.save(outfit);
     }
 
@@ -52,10 +60,26 @@ public class  ImplementationOutfitService implements OutfitService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Outfit is not exists with given id: " + outfitId));
         if(updateOutfit.getClothingIds() != null){
-            outfit.setClothingIds(updateOutfit.getClothingIds());
+            // Obten la lista actual de ids de prendas del outfit
+            List<UUID> currentClothingIds = outfit.getClothingIds();
+            // Obten la lista de ids de prendas que se están intentando añadir
+            List<UUID> newClothingIds = updateOutfit.getClothingIds();
+            // Itera sobre la lista de ids de prendas que se están intentando añadir
+            for (UUID clothingId : newClothingIds) {
+                // Si el id de la prenda no está en la lista actual, agrégalo
+                if (!currentClothingIds.contains(clothingId)) {
+                    currentClothingIds.add(clothingId);
+                }
+            }
+            // Actualiza la lista de ids de prendas del outfit
+            outfit.setClothingIds(currentClothingIds);
         }
         if(updateOutfit.getIsPublic() != null){
             outfit.setIsPublic(updateOutfit.getIsPublic());
+        }
+        // Verificar si el outfit cumple con los requisitos mínimos
+        if (!outfitMeetsRequirements(outfit)) {
+            throw new OutfitRequirementsException("The outfit must have at least one 'TRUNK', 'PANTS' and 'SHOES' type garment");
         }
         return  outfitRepository.save(outfit);
     }
@@ -78,11 +102,14 @@ public class  ImplementationOutfitService implements OutfitService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Clouthing does not exist with given id: " + clothingId));
 
-        if (!outfit.getClothingList().contains(clouthing)) {
+        if (!outfit.getClothingIds().contains(clothingId)) {
             throw new ResourceNotFoundException("Clouthing is not part of the outfit with id: " + outfitId);
         }
 
-        outfit.getClothingList().remove(clouthing);
+        outfit.getClothingIds().remove(clothingId);
+        if (!outfitMeetsRequirements(outfit)) {
+            throw new OutfitRequirementsException("The outfit must have at least one 'TRUNK', 'PANTS' and 'SHOES' type garment");
+        }
         outfitRepository.save(outfit);
     }
 
@@ -153,5 +180,27 @@ public class  ImplementationOutfitService implements OutfitService {
     @Override
     public List<Outfit> getOutfitsOrderByVotes() {
         return outfitRepository.findPublicOutfitsOrderedByVoteCount();
+    }
+
+    private boolean outfitMeetsRequirements(Outfit outfit) {
+        // Obtener los IDs de las prendas del outfit
+        List<UUID> clothingIds = outfit.getClothingIds();
+        // Lista para guardar los tipos de prendas del outfit
+        List<Type> clothingTypes = new ArrayList<>();
+
+        // Obtener los tipos de cada prenda en el outfit
+        for (UUID clothingId : clothingIds) {
+            Clothing clothing = clothingRepository.findById(clothingId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Clothing not found with ID: " + clothingId));
+
+            // Agregar el tipo de la prenda a la lista
+            clothingTypes.add(clothing.getType());
+        }
+        // Verificar si el outfit cumple con los requisitos
+        boolean hasTrunk = clothingTypes.contains(Type.TRUNK);
+        boolean hasPants = clothingTypes.contains(Type.PANTS);
+        boolean hasShoes = clothingTypes.contains(Type.SHOES);
+
+        return hasTrunk && hasPants && hasShoes;
     }
 }
