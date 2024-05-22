@@ -9,6 +9,8 @@ import com.google.gson.JsonParser;
 
 // HttpClient libraries
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
@@ -33,31 +35,19 @@ public class BingVisualSearchService {
     @Value("${bing.search.api.key}")
     private String subscriptionKey;
 
-    public String searchByImage(String imageBase64) throws IOException {
-        File file = new File( "path.jpg" );
+    public String searchByImage(String imageBase64) throws IOException, UnirestException {
+
+        File file = new File("path.jpg");
         byte[] bytes = Base64.decodeBase64(imageBase64);
-        FileUtils.writeByteArrayToFile( file, bytes );
 
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        // Llama a la API de Bing Visual Search
+        Unirest.setTimeouts(0, 0);
+        com.mashape.unirest.http.HttpResponse<String> response = Unirest.post(endpoint)
+                .header("Ocp-Apim-Subscription-Key", subscriptionKey)
+                .field("image", file)
+                .asString();
 
-        HttpEntity entity = MultipartEntityBuilder
-                .create()
-                //.addBinaryBody("image", file)
-                .addBinaryBody("image", new File("C:\\Users\\Mauricio Monroy\\Downloads\\prueba.jpg"))
-                .build();
-
-        HttpPost httpPost = new HttpPost(endpoint);
-        httpPost.setHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-        httpPost.setEntity(entity);
-
-        System.out.println(subscriptionKey);
-        System.out.println(endpoint);
-
-        HttpResponse response = httpClient.execute(httpPost);
-        InputStream stream = response.getEntity().getContent();
-
-        String json = new Scanner(stream).useDelimiter("\\A").next();
-        return prettify(json);
+        return prettify(response.getBody());
     }
 
     public static String prettify(String json_text) {
