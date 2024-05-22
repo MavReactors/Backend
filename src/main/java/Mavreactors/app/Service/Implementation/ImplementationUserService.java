@@ -19,10 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Base64;
 
 import java.util.List;
 import java.util.UUID;
+
+import static Mavreactors.app.Model.UserRole.CUSTOMER;
 
 @Slf4j
 @Service
@@ -53,6 +56,11 @@ public class ImplementationUserService implements UserService {
         String encryptedPassword = encryptPassword(userDto.getPassword());
         userDto.setPassword(encryptedPassword);
 
+        List<UserRole> roles = new ArrayList<>();
+        roles.add(CUSTOMER);
+        userDto.setUserRoles(roles);
+
+        userDto.setProfilePhoto("");
         User user = UserMapper.mapToUser(userDto);
 
         ConfirmationToken confirmationToken = new ConfirmationToken(UUID.randomUUID().toString(), user.getEmail());
