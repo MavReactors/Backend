@@ -1,6 +1,7 @@
 package Mavreactors.app.Service;
 
 import Mavreactors.app.Model.Clothing;
+import Mavreactors.app.Model.Type;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.dto.ClothingDto;
 
@@ -14,4 +15,5 @@ public interface ClothingService {
     Clothing updateClothing(UUID prendasId, ClothingDto updatePrenda);
     void deleteClothing(UUID prendasId);
     List<Clothing> getAllFavoriteClothing(User user);
+    List<Clothing> getClothingByType(Type type);
 }
