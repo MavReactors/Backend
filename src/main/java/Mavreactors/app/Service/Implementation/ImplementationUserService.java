@@ -55,25 +55,30 @@ public class ImplementationUserService implements UserService {
         // Encriptar la contraseña
         String encryptedPassword = encryptPassword(userDto.getPassword());
         userDto.setPassword(encryptedPassword);
-
+        log.info("Encripta la contraseña :D");
+        
         List<UserRole> roles = new ArrayList<>();
         roles.add(CUSTOMER);
         userDto.setUserRoles(roles);
-
+        log.info("Cambia roles :D");
+        
         userDto.setProfilePhoto("");
         User user = UserMapper.mapToUser(userDto);
-
+        log.info("Mappea de dto a user:D");
+        
         ConfirmationToken confirmationToken = new ConfirmationToken(UUID.randomUUID().toString(), user.getEmail());
         confirmationTokenRepository.save(confirmationToken);
-
+        log.info("Crea el UUID de verificación:D");
+        
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setText("To confirm your account, please click here : "
-                +"https://whizbackend.azurewebsites.net/api/confirm-account?token="+confirmationToken.getConfirmationToken());
+                +"https://whizbackend.azurewebsites.net/confirm-account?token="+confirmationToken.getConfirmationToken());
         //mailMessage.setText("To confirm your account, please click here : "
         //        +"http://localhost:8080/api/confirm-account?token="+confirmationToken.getConfirmationToken());
         emailService.sendEmail(mailMessage);
+        log.info("Envía el correo:D");
         System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
 
         return userRepository.save(user);
