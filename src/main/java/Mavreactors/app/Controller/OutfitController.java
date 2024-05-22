@@ -131,4 +131,9 @@ public class OutfitController {
         return ResponseEntity.ok("Date deleted successfully! ");
     }
 
+    @GetMapping("/outfit/top")
+    public ResponseEntity<List<Outfit>> getTopOutfits() {
+        List<Outfit> outfits = outfitService.getOutfitsOrderByVotes();
+        return ResponseEntity.ok(outfits);
+    }
 }

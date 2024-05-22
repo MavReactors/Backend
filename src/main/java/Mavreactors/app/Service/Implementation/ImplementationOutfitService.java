@@ -51,8 +51,12 @@ public class  ImplementationOutfitService implements OutfitService {
         Outfit outfit = outfitRepository.findById(outfitId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Outfit is not exists with given id: " + outfitId));
-        outfit.setClothingIds(updateOutfit.getClothingIds());
-        outfit.setIsPublic(updateOutfit.getIsPublic());
+        if(updateOutfit.getClothingIds() != null){
+            outfit.setClothingIds(updateOutfit.getClothingIds());
+        }
+        if(updateOutfit.getIsPublic() != null){
+            outfit.setIsPublic(updateOutfit.getIsPublic());
+        }
         return  outfitRepository.save(outfit);
     }
 
@@ -144,5 +148,10 @@ public class  ImplementationOutfitService implements OutfitService {
         }
         outfit.getSpecialDate().remove(date);
         outfitRepository.save(outfit);
+    }
+
+    @Override
+    public List<Outfit> getOutfitsOrderByVotes() {
+        return outfitRepository.findPublicOutfitsOrderedByVoteCount();
     }
 }

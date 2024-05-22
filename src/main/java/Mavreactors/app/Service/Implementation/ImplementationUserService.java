@@ -11,6 +11,7 @@ import Mavreactors.app.Service.EmailService;
 import Mavreactors.app.Service.UserService;
 import Mavreactors.app.dto.UserDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -23,6 +24,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ImplementationUserService implements UserService {
@@ -64,7 +66,6 @@ public class ImplementationUserService implements UserService {
         //mailMessage.setText("To confirm your account, please click here : "
         //        +"http://localhost:8080/api/confirm-account?token="+confirmationToken.getConfirmationToken());
         emailService.sendEmail(mailMessage);
-
         System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
 
         return userRepository.save(user);

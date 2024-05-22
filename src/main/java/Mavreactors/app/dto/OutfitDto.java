@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class OutfitDto {
     private List<UUID> clothingIds;
     private Boolean isPublic;

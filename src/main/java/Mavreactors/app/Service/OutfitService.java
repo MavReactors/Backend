@@ -20,4 +20,5 @@ public interface OutfitService {
     List<Date> getSpecialDate(UUID outfitId);
     List<Date> updateSpecialDate(UUID outfitId, Date oldDate,Date newDate);
     void deleteSpecialDate(UUID outfitId, Date date);
+    List<Outfit> getOutfitsOrderByVotes();
 }
