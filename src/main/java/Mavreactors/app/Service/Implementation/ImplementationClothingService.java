@@ -4,6 +4,7 @@ import Mavreactors.app.Exceptions.ResourceNotFoundException;
 import Mavreactors.app.Mapper.ClothingMapper;
 import Mavreactors.app.Model.Clothing;
 import Mavreactors.app.Model.Outfit;
+import Mavreactors.app.Model.Type;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Repository.ClothingRepository;
 import Mavreactors.app.Repository.UserRepository;
@@ -12,6 +13,7 @@ import Mavreactors.app.dto.ClothingDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,5 +78,18 @@ public class ImplementationClothingService implements ClothingService {
     @Override
     public List<Clothing> getAllFavoriteClothing(User user) {
         return clothingRepository.findByIsFavoriteTrueAndUser(user);
+    }
+
+    @Override
+    public List<Clothing> getClothingByType(Type type) {
+        // Verify if the type is valid
+        if (!isValidType(type)) {
+            throw new IllegalArgumentException("Invalid clothing type: " + type);
+        }
+        return clothingRepository.findByType(type);
+    }
+
+    private boolean isValidType(Type type) {
+        return Arrays.asList(Type.values()).contains(type);
     }
 }

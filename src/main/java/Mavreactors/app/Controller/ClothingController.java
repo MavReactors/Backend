@@ -2,6 +2,7 @@ package Mavreactors.app.Controller;
 
 import Mavreactors.app.Model.Clothing;
 import Mavreactors.app.Model.Session;
+import Mavreactors.app.Model.Type;
 import Mavreactors.app.Model.User;
 import Mavreactors.app.Repository.SessionRepository;
 import Mavreactors.app.Repository.UserRepository;
@@ -55,6 +56,22 @@ public class ClothingController {
         Clothing clothing = clothingService.getClothingById(clothingId);
         return ResponseEntity.ok(clothing);
 
+    }
+
+    @GetMapping("/prenda/{type}")
+    public ResponseEntity<?> getClothingByType(@PathVariable Type type, @CookieValue("authToken") UUID authToken) {
+        // Obtiene el usuario a partir del correo electrónico
+        Session session = sessionRepository.findByToken(authToken);
+        User user = session.getUser();
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
+        }
+        try {
+            List<Clothing> clothingList = clothingService.getClothingByType(type);
+            return ResponseEntity.ok(clothingList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid clothing type: " + type);
+        }
     }
 
     @GetMapping("/prendas-favoritas")

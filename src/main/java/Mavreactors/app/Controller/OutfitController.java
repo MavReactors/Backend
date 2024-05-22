@@ -1,5 +1,6 @@
 package Mavreactors.app.Controller;
 
+import Mavreactors.app.Exceptions.OutfitRequirementsException;
 import Mavreactors.app.Model.Outfit;
 import Mavreactors.app.Model.Session;
 import Mavreactors.app.Model.User;
@@ -35,8 +36,12 @@ public class OutfitController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Devuelve un error si el usuario no se encuentra
         }
-        Outfit saveOutfit = outfitService.createOutfit(outfitDto, user.getEmail());
-        return new ResponseEntity<>(saveOutfit, HttpStatus.CREATED);
+        try {
+            Outfit saveOutfit = outfitService.createOutfit(outfitDto, user.getEmail());
+            return new ResponseEntity<>(saveOutfit, HttpStatus.CREATED);
+        } catch (OutfitRequirementsException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/outfit")
@@ -61,8 +66,12 @@ public class OutfitController {
     @PutMapping("/outfit/{id}")
     public ResponseEntity<Outfit> udapteOutfit(@PathVariable("id") UUID outfotId,
                                                    @RequestBody OutfitDto updatedOutfit){
-        Outfit outfit = outfitService.updateOutfit(outfotId, updatedOutfit);
-        return ResponseEntity.ok(outfit);
+        try {
+            Outfit outfit = outfitService.updateOutfit(outfotId, updatedOutfit);
+            return ResponseEntity.ok(outfit);
+        } catch (OutfitRequirementsException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/outfit/{id}")
@@ -73,8 +82,12 @@ public class OutfitController {
 
     @DeleteMapping("/outfit/{uuid}/prenda/{id}")
     public ResponseEntity<String>  deletePrendaFromOutfit(@PathVariable("uuid") UUID outfitId ,@PathVariable("id") UUID clothingId){
-        outfitService.deletePrendaFromOutfit(outfitId, clothingId);
-        return ResponseEntity.ok("Clothing deleted successfully! ");
+        try {
+            outfitService.deletePrendaFromOutfit(outfitId, clothingId);
+            return ResponseEntity.ok("Clothing deleted successfully! ");
+        } catch (OutfitRequirementsException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/outfit/public")
