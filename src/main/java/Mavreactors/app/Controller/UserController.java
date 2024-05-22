@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://icy-ocean-085971c1e.5.azurestaticapps.net/")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api")
