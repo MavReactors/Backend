@@ -56,20 +56,20 @@ public class ImplementationUserService implements UserService {
         String encryptedPassword = encryptPassword(userDto.getPassword());
         userDto.setPassword(encryptedPassword);
         log.info("Encripta la contraseña :D");
-        
+
         List<UserRole> roles = new ArrayList<>();
         roles.add(CUSTOMER);
         userDto.setUserRoles(roles);
         log.info("Cambia roles :D");
-        
+
         userDto.setProfilePhoto("");
         User user = UserMapper.mapToUser(userDto);
         log.info("Mappea de dto a user:D");
-        
+
         ConfirmationToken confirmationToken = new ConfirmationToken(UUID.randomUUID().toString(), user.getEmail());
         confirmationTokenRepository.save(confirmationToken);
         log.info("Crea el UUID de verificación:D");
-        
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Complete Registration!");
