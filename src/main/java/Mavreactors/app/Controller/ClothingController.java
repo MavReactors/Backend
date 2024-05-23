@@ -58,7 +58,7 @@ public class ClothingController {
 
     }
 
-    @GetMapping("/prenda/{type}")
+    @GetMapping("/prendas/{type}")
     public ResponseEntity<?> getClothingByType(@PathVariable Type type, @CookieValue("authToken") UUID authToken) {
         // Obtiene el usuario a partir del correo electrónico
         Session session = sessionRepository.findByToken(authToken);
