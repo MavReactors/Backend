@@ -30,7 +30,6 @@ public class Clothing {
     @NonNull
     private Boolean isIroned;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "type")
     @NonNull
     private Type type;

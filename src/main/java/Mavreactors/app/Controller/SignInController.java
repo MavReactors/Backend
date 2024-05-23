@@ -31,7 +31,7 @@ public class SignInController {
         try {
             // Intentar crear el nuevo usuario
             User createdUser = userService.createUser(userDto);
-            return ResponseEntity.ok("Verify email by the link sent to your email address");
+            return ResponseEntity.ok(createdUser);
         } catch (EmailAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (UserNameAlreadyExistsException e) {
@@ -39,9 +39,10 @@ public class SignInController {
         }
     }
 
+    /*
     @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> confirmUserAccount(@RequestParam("token")String confirmationToken) {
         return userService.confirmEmail(confirmationToken);
-    }
+    }*/
 
 }
