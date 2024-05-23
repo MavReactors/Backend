@@ -2,10 +2,10 @@ package Mavreactors.app.Model;
 
 public enum Type {
     CAP,
-    AC,
-    TK,
+    ACCESORIES,
+    TRUNK,
     BELT,
     PANTS,
-    SK,
+    SOCKS,
     SHOES
 }
