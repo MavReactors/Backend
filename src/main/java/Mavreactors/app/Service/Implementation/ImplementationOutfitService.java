@@ -197,7 +197,7 @@ public class  ImplementationOutfitService implements OutfitService {
             clothingTypes.add(clothing.getType());
         }
         // Verificar si el outfit cumple con los requisitos
-        boolean hasTrunk = clothingTypes.contains(Type.TRUNK);
+        boolean hasTrunk = clothingTypes.contains(Type.TRK);
         boolean hasPants = clothingTypes.contains(Type.PANTS);
         boolean hasShoes = clothingTypes.contains(Type.SHOES);
 
